@@ -1,0 +1,9 @@
+This type is used to create a script on hosts to unlock
+a crypted device and mount at a specific location.
+
+Use case:
+
+    Services are running on remote hosts, to which other parties
+    in a datacenter may have access to. To prevent them from accessing
+    the data, the hosts start and later on the data partition
+    is manually unlocked.
