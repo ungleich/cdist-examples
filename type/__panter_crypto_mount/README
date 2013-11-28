@@ -7,3 +7,10 @@ Use case:
     in a datacenter may have access to. To prevent them from accessing
     the data, the hosts start and later on the data partition
     is manually unlocked.
+
+Example use:
+
+    __panter_crypto_mount --device /dev/sda5 \
+        --dmdevice vm \
+        --mountpoint /vm \
+        --start "/etc/init.d/qemu-vms start"
