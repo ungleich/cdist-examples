@@ -1,0 +1,37 @@
+#
+# 2013-11-28
+# Written by  Nico Schottelius (www.ungleich.ch)
+# Written for Panter AG (www.panter.ch)
+#
+
+
+# Read and setup the required parameters for the template
+for param in device dmdevice mountpoint; do
+    eval export $param=$(cat "$__object/parameter/$param")
+done
+
+if [ -f "$__object/parameter/start" ]; then
+    export start=$(cat "$__object/parameter/start")
+fi
+
+################################################################################
+# Install required packages
+#
+for extrapkg in cryptsetup; do
+    __package "$extrapkg" --state present
+done
+
+################################################################################
+# Install script
+#
+
+template="$__type/files/manual_startup.sh"
+template_output="$__object/files/manual_startup.sh"
+
+mkdir "$__object/files"
+
+"$template" > "$template_output"
+
+__file /usr/local/bin/manual_startup.sh \
+    --mode 0700 \
+    --source "$template_output"
