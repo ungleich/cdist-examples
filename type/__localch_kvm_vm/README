@@ -1,0 +1,14 @@
+This type is used to create a VM based on qemu-kvm on CentOS.
+
+It requires the type __localch_kvm_vm for preparing the host.
+
+You can use it like this:
+
+    __localch_kvm_vm yourvmname.local.ch \
+        --nic-fz 00:16:3e:00:00:42 \
+        --nic-pz 00:16:3e:00:00:23 \
+        --system-disk-size 53687091200 \
+        --cores 4 \
+        --memory 8589934592
+
+The mac addresses have been generated using cinv (http://www.nico.schottelius.org/software/cinv/)
