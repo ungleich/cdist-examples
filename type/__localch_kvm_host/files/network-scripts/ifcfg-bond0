@@ -1,0 +1,5 @@
+DEVICE=bond0
+BOOTPROTO=none
+BONDING_OPTS="mode=802.3ad"
+ONBOOT=yes
+MTU=9000

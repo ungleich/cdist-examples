@@ -1,0 +1,14 @@
+#!/bin/sh
+# Nico Schottelius
+
+# Find out, which naming scheme we are on:
+# p6p1 & p6p2 or eth4 & eth5
+# See
+# http://linux.dell.com/files/whitepapers/consistent_network_device_naming_in_linux.pdf
+#
+
+if ip link | grep -q p6p1; then
+    echo new
+else
+    echo traditional
+fi

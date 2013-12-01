@@ -1,0 +1,6 @@
+#!/bin/sh
+
+ip link set "$1" up
+ip link set "$1" mtu 9000
+
+brctl addif brfz "$1"

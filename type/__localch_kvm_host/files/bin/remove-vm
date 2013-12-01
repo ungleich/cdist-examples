@@ -1,0 +1,12 @@
+#!/bin/sh
+
+if [ $# -ne 1 ]; then
+    echo "$0: <vmname>"
+    exit 1
+fi
+
+vm=$1
+basedir=/opt/local.ch/sys/kvm/vm
+dir=$basedir/$vm/
+
+echo rm -rf "$dir"

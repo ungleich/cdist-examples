@@ -1,0 +1,8 @@
+#!/bin/sh
+
+echo "Starting VM: $@" | logger -t "kvm-vm"
+
+ip link set "$1" up
+ip link set "$1" mtu 9000
+
+brctl addif brpz "$1"

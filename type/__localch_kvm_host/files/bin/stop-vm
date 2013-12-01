@@ -1,0 +1,33 @@
+#!/bin/sh
+
+if [ $# -ne 1 ]; then
+    echo "$0: <vmname>"
+    exit 1
+fi
+
+vm=$1
+basedir=/opt/local.ch/sys/kvm/vm
+monitor=$basedir/$vm/monitor
+
+waittime=10
+
+if ! pgrep -f "$vm" >/dev/null; then
+    echo "Machine $vm already down"
+    exit 0
+fi
+
+echo system_powerdown | socat - "UNIX-CONNECT:$monitor"
+
+echo "Waiting $waittime seconds before killing VM"
+
+i=0
+while [ $i -lt $waittime ]; do
+    pgrep -f "$vm" || break
+    i=$(($i+1))
+    sleep 1
+done
+
+if pgrep -f "$vm" >/dev/null; then
+    echo "Killing VM"
+    pkill "$vm"
+fi

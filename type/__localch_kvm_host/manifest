@@ -1,0 +1,64 @@
+#
+# Configuration for KVM Hosts (2012)
+#
+
+
+for package in qemu-kvm qemu-kvm-tools socat wireshark; do
+    __package $package --state present
+done
+
+binsrc="$__type/files/bin"
+bindir=/opt/local.ch/sys/kvm/bin
+networksrc="$__type/files/network-scripts"
+networkdir="/etc/sysconfig/network-scripts"
+
+__directory --parents yes "$bindir"
+
+cd "$binsrc"
+for file in $(ls -1); do
+    require="__directory/$bindir" \
+        __file "$bindir/$file" --mode 0755 --source "$binsrc/$file"
+done
+
+################################################################################
+# Static scripts
+cd "$networksrc"
+for file in *; do
+    __file "$networkdir/$file" --mode 0644 --source "$networksrc/$file"
+done
+
+################################################################################
+# Dynamic scripts - for eth4/p6p1
+
+style=$(cat "$__object/explorer/interface_style")
+
+if [ "$style" = new ]; then
+    devices="p6p1 p6p2"
+else
+    devices="eth4 eth5"
+fi
+
+mkdir -p "$__object/files"
+
+for netdev in $devices; do
+    cat << eof > "$__object/files/$netdev"
+DEVICE="$netdev"
+NM_CONTROLLED="yes"
+USERCTL=no
+ONBOOT=yes
+MASTER=bond0
+SLAVE=yes
+BOOTPROTO=none
+eof
+
+    __file "$networkdir/ifcfg-$netdev" --mode 0644 \
+        --source "$__object/files/$netdev"
+done
+
+################################################################################
+# Firewall & init.d
+
+__file "/etc/sysconfig/iptables" --mode 0644 --source "$__type/files/iptables"
+
+__file "/etc/init.d/kvm-vms" --mode 0755 --source "$__type/files/init.d/kvm-vms"
+require="__file/etc/init.d/kvm-vms" __start_on_boot kvm-vms

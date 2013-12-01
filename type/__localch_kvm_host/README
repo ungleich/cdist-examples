@@ -1,0 +1,34 @@
+This type is being used at local.ch to setup the CentOS based
+VM hosts running qemu-kvm. It supports device bonding via LACP
+and VMs are connect to two different networks (presentation and storage
+network) using VLAN tags on the host.
+
+The VMs are started using generated shell scripts and backgrounded using
+screen.
+
+This type works together with __localch_kvm_vm.
+
+The explorer interface_style is used to detect whether the interface
+naming scheme is traditional (ethX) or location based (p6p2).
+
+Supporting executables:
+
+    - files/bin/ifdown: Called when the VM is being shutdown
+    - files/bin/ifup-fz:
+    - files/bin/ifup-pz:
+        Both called when the storage or presentation interface is setup
+        -> adjusts the mtu to 9000
+        -> interface is added to the correct host bridge
+    - files/bin/remove-vm: Removes a VM
+    - files/bin/stop-vm: Stops a VM
+    - files/init.d/kvm-vms: Init script to start VMs
+
+Supporting configuration:
+
+    - files/iptables: ensure the firewall is off on the host (it's the VMs task)
+    - files/network-scripts/ifcfg-bond0: Setup the LACP device
+    - files/network-scripts/ifcfg-bond0.2: VLAN tag over LACP for presentation network
+    - files/network-scripts/ifcfg-bond0.3: VLAN tag over LACP for storage network
+    - files/network-scripts/ifcfg-brfz: Bridge that contains VM storage network interfaces
+    - files/network-scripts/ifcfg-brpz: Bridge that contains VM presentation network interfaces
+

@@ -1,0 +1,5 @@
+#!/bin/sh
+# Ifdown does not need to do anything, because the
+# tap device vanishes from alone -- misusing it for logging
+
+echo "Shutting down VM: $@" | logger -t "kvm-vm"
