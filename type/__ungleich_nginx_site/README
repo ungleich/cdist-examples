@@ -1,0 +1,27 @@
+This cdist type is used to manage the nginx sites maintained by ungleich (www.ungleich.ch).
+
+It is being used on our webservers like this:
+
+        for site in \
+            nico.schotteli.us \
+            photo.nico.schottelius.org www.nico.schottelius.org \
+            eof.name planet.eof.name stats.eof.name \
+            www.schottelius.net www.schottelius.org; do
+
+            __ungleich_nginx_site $site \
+                --listen 77.109.138.216:80 --owner nico \
+                --locationopt "autoindex on;"
+        done
+
+Parameters:
+
+    - required:
+        - listen: on which ip/port to / listen
+        - owner: which unix user can write into the website directory
+
+    - optional:
+        - state: as usual (absent, present)
+
+    - optional multiple:
+        - alias: aliases for a host
+        - locationopt: options to include into the locaction {} block
