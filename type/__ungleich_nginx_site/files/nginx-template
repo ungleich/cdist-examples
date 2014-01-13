@@ -1,0 +1,43 @@
+
+cat << eof
+
+#
+# Do not change this file. Changes will be overwritten by cdist.
+#
+
+server {
+   # Only bind on the reserved IP address
+   listen $listen;
+
+eof
+
+servername="$name"
+
+for a in $alias; do
+    servername="$servername $a"
+done
+servername="$servername"
+
+cat <<eof
+
+    server_name $servername;
+
+    location / {
+        root $www_dir;
+eof
+
+if [ -f "$__object/parameter/locationopt" ]; then
+    echo "    # User given location parameters"
+    while read line; do
+        echo "        $line"
+    done < "$__object/parameter/locationopt"
+fi
+
+cat <<eof
+    }
+
+    access_log $log_dir/access.log;
+
+}
+
+eof

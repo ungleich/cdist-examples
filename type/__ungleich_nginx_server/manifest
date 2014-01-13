@@ -1,0 +1,3 @@
+state=$(cat "$__object/parameter/state")
+
+__package nginx --state "$state"

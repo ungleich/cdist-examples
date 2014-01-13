@@ -1,0 +1,47 @@
+export name="$__object_id"
+
+for var in listen owner state; do
+    eval export $var=$(cat "$__object/parameter/$var")
+done
+
+if [ -f "$__object/parameter/alias" ]; then
+    export alias="$(cat "$__object/parameter/alias")"
+else
+    export alias=""
+fi
+
+base_dir="/home/services/www/$owner/$name"
+conf_dir=/etc/nginx/sites-enabled
+
+template_in=$__type/files/nginx-template
+template_out=$__object/files/nginx-template
+
+export www_dir="$base_dir/www"
+export log_dir="$base_dir/logs"
+
+################################################################################
+# Requirements
+#
+__package nginx --state present
+__start_on_boot nginx --state present
+
+__directory "$base_dir" --owner "root" --mode 0755 --state "$state"
+require="__directory/$base_dir" __directory "$www_dir" \
+    --owner "$owner" --mode 0755 --state "$state"
+require="__directory/$base_dir" __directory "$log_dir" \
+    --owner "www-data" --mode 0755 --state "$state"
+
+################################################################################
+# Automatic restart
+#
+
+require="$__object_name" __ungleich_nginx_server
+
+################################################################################
+# Generate and install config file
+#
+mkdir "$__object/files"
+sh -e "$template_in" > "$template_out"
+
+require="__directory/$www_dir __directory/$log_dir" __file "$conf_dir/$name" \
+    --source "$template_out" --mode 0644 --state "$state"

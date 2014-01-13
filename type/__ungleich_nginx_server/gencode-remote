@@ -1,0 +1,3 @@
+if grep -q "^__file/etc/nginx" "$__messages_in"; then
+    echo /etc/init.d/nginx restart
+fi
