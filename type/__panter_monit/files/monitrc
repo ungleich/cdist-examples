@@ -72,7 +72,7 @@ set mailserver localhost                     # primary mailserver
 ## or sender using the MAIL-FORMAT statement. Macros such as $DATE, etc.
 ## are expanded at runtime. For example, to override the sender:
 #
-# set mail-format { from: monit@panter.ch }
+# set mail-format { from: monit@example.com }
 #
 #
 ## You can set alert recipients here whom will receive alerts if/when a 
