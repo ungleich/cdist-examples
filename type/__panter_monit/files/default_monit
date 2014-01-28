@@ -1,0 +1,19 @@
+# File is under control of cdist - local changes may be overwritten anytime!
+#
+# Defaults for monit initscript
+# sourced by /etc/init.d/monit
+# installed at /etc/default/monit by maintainer scripts
+# Fredrik Steen <stone@debian.org>
+
+# You must set this variable to for monit to start
+# Debian 6
+startup=1
+
+# Debian 7
+START=yes
+
+
+# To change the intervals which monit should run uncomment
+# and change this variable.
+# CHECK_INTERVALS=180
+

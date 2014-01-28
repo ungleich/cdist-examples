@@ -1,0 +1,7 @@
+#
+# This ensures that delayed jobs are running
+#
+check process delayed_job pidfile /home/rails/app/shared/pids/dj.pid
+  start = "/home/rails/bin/dj.sh start"
+  as uid rails
+  stop = "/home/rails/bin/dj.sh stop"

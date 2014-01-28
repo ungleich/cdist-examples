@@ -1,0 +1,16 @@
+#
+# Allow the developer to include monit configurations into rails
+#
+
+# Include developer monit configuration
+#
+include /home/rails/app/shared/config/monit.conf
+
+# Allow monit to restart monit when user changes config
+check file monit.conf
+    with path /home/rails/app/current/config/monit.conf
+    if changed checksum
+        then exec "monit -t && /etc/init.d/monit restart"
+
+    # No need to nag everyone if this file is missing
+    noalert alerts@example.com

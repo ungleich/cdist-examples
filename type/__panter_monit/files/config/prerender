@@ -1,0 +1,7 @@
+#
+# Ensure the prerender Service runs
+#
+check process prerender pidfile /home/rails/app/shared/pids/prerender.pid
+  start = "/home/rails/bin/prerender.sh start"
+  as uid rails
+  stop = "/home/rails/bin/prerender.sh stop"

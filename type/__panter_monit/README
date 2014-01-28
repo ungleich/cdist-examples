@@ -1,0 +1,25 @@
+This type allows you to configure monit (http://mmonit.com/monit/).
+It contains some examples for services used together with
+Ruby on Rails (aka rails, http://rubyonrails.org/).
+
+Configuration snippets for monit are stored in files/config/.
+
+Use case:
+
+    Whenever you need to ensure something runs even if it crashes.
+
+Special Use Case:
+
+    There is a more special configuation file available, namely
+    developer-monit. As you can see in files/config/developer-monit,
+    it checks for a monit configuration file within the home directory
+    of the rails user.
+
+    This allows (rails) developers to include their own 
+    monit configurations to ensure programs required by the rails
+    website are up and running.
+
+Example use:
+
+    __panter_monit dj
+    __panter_monit developer-monit

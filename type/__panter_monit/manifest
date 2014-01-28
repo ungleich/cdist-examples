@@ -1,0 +1,64 @@
+#!/bin/sh
+#
+# 2013-2014 Nico Schottelius (nico-cdist at schottelius.org)
+#
+# This file is part of cdist.
+#
+# cdist is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# cdist is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+#
+
+
+config=$__object_id
+config_src_dir=$__type/files/config/
+config_dst_dir=/etc/monit.d
+
+cd "$config_src_dir"
+
+# Sanity check object id
+if [ ! -f "$config" ]; then
+    cat <<eof >&2
+No such configuration, ${config}.
+Available configurations:
+
+eof
+    ls -1 >&2
+
+    exit 1
+fi
+
+################################################################################
+# Generic setup
+#
+__package monit --state present
+__directory "$config_dst_dir" --mode 0755
+
+require="__package/monit" __file "/etc/monit/monitrc" \
+    --source "$__type/files/monitrc" \
+    --mode 0700
+
+__file /etc/default/monit \
+    --source "$__type/files/default_monit" \
+    --mode 0644
+
+require="__package/monit __file/etc/monit/monitrc __file/etc/default/monit" \
+    __process monit \
+        --name "/usr/sbin/monit -c /etc/monit/monitrc -s /var/lib/monit/monit.state" \
+        --start "/etc/init.d/monit start"
+
+################################################################################
+# Specific configuration
+#
+require="__directory/etc/monit.d" __file "$config_dst_dir/${config}.conf" \
+    --source "$config_src_dir/$config" \
+    --mode 0700

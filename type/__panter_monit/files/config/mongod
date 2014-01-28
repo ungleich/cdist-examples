@@ -1,0 +1,9 @@
+#
+# Ensure mongodb started by the rails user runs
+#
+check process mongod pidfile /home/rails/mongodb/run/mongod.pid
+  start = "/home/rails/mongodb/bin/mongod.sh start"
+  as uid rails
+  stop = "/home/rails/mongodb/bin/mongod.sh stop"
+
+

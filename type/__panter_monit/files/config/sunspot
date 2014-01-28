@@ -1,0 +1,7 @@
+#
+# Ensure sunspot runs - http://sunspot.github.io/
+#
+check process sunspot pidfile /home/rails/app/shared/pids/sunspot-solr-production.pid
+  start = "/home/rails/bin/sunspot.sh start"
+  as uid rails
+  stop = "/home/rails/bin/sunspot.sh stop"

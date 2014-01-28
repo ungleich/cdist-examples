@@ -1,0 +1,7 @@
+#
+# Ensure that if the puppetmaster crashed it is restarted
+#
+check process puppetmasterd pidfile /var/lib/puppet/run/master.pid
+  start = "/usr/bin/puppetmasterd"
+  as uid puppet
+  stop = "/bin/bash -c 'kill `cat /var/lib/puppet/run/master.pid`'"

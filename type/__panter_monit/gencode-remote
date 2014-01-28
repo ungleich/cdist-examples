@@ -1,0 +1,5 @@
+# Reload if anything changed beloved /etc/monit*
+
+if grep -q "^__file/etc/monit" "$__messages_in"; then
+    echo /etc/init.d/monit restart
+fi
