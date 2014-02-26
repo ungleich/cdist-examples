@@ -1,0 +1,48 @@
+#!/bin/sh
+#
+# 2013 - 2014 Thomas Oettli    (otho at sfs.biz)
+# 2013 - 2014 Daniel Heule     (hda at sfs.biz)
+#
+# This file is part of sfs-cdist-types.
+#
+# sfs-cdist-types is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# sfs-cdist-types is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with sfs-cdist-types. If not, see <http://www.gnu.org/licenses/>.
+#
+
+
+kernel_version="$(cat "$__object/explorer/kernel_version")"
+patterns="$(cat "$__object/explorer/patterns")"
+os_version="$(cat "$__global/explorer/os_version")"
+
+case "$os_version" in 
+    SUSE\ Linux\ Enterprise\ Server\ 11*VERSION\ =\ 11*PATCHLEVEL\ =\ 2)
+        init_kernel_version="3.0.13-0.27.1"
+        init_patterns="Minimal base"
+    ;; 
+    SUSE\ Linux\ Enterprise\ Server\ 11*VERSION\ =\ 11*PATCHLEVEL\ =\ 3)
+        init_kernel_version="3.0.76-0.11.1"
+        init_patterns="Minimal base"
+    ;; 
+    *)
+        echo "not implemented os_version of suse !" >&2
+        exit 1
+    ;;
+esac
+
+if [ "${kernel_version}" != "${init_kernel_version}" ] || [ "${patterns}" != "${init_patterns}" ]; then 
+   echo "system has updates allready" >> "$__messages_out"
+  exit 0; 
+fi
+
+echo "system needs to be updated, inital release detected" >> "$__messages_out"
+echo "zypper --quiet --non-interactive update --auto-agree-with-licenses &> /dev/null"

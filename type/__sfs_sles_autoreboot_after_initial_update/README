@@ -1,0 +1,8 @@
+This type determines if updates where installed by type__sfs_sles_update.
+If yes, reboot the system.
+Otherwise it does not do anything.
+It is typically the last executed type in a cdist run, this must be ensured by setting the according requirements. 
+
+Example usage:
+
+    __sfs_sles_autoreboot_after_initial_update
