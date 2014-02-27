@@ -1,0 +1,46 @@
+#!/bin/sh
+#
+# 2013 - 2014 Thomas Oettli    (otho at sfs.biz)
+# 2013 - 2014 Daniel Heule     (hda at sfs.biz)
+#
+# This file is part of sfs-cdist-types.
+#
+# sfs-cdist-types is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# sfs-cdist-types is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with sfs-cdist-types. If not, see <http://www.gnu.org/licenses/>.
+#
+# install host utilities
+
+if [ -f "$__object/parameter/version" ]; then
+    version="$(cat "$__object/parameter/version")"
+fi
+
+installed_version="$(cat "$__object/explorer/installed_version")"
+
+[ "${installed_version}" = "${version}" ] && exit 0
+
+if [ -f "$__type/files/netapp_linux_host_utilities-${version}.x86_64.rpm" ]; then
+    # copy source package to target host
+    __file /tmp/netapp_linux_host_utilities-${version}.x86_64.rpm --state present --source "$__type/files/netapp_linux_host_utilities-${version}.x86_64.rpm"
+    __file /etc/hba.conf  --state present --source "$__type/files/etc/hba.conf" --mode 0755
+    __file /usr/lib/libdfc.so.4.2.14  --state present --source "$__type/files/usr/lib/libdfc.so.4.2.14" --mode 0755
+    __file /usr/lib/libemulexhbaapi.so  --state present --source "$__type/files/usr/lib/libemulexhbaapi.so" --mode 0755
+    __file /usr/lib/libHBAAPI.so  --state present --source "$__type/files/usr/lib/libHBAAPI.so" --mode 0755
+    __file /usr/lib64/libdfc.so.4.2.14  --state present --source "$__type/files/usr/lib64/libdfc.so.4.2.14" --mode 0755
+    __file /usr/lib64/libemulexhbaapi.so  --state present --source "$__type/files/usr/lib64/libemulexhbaapi.so" --mode 0755
+    __file /usr/lib64/libHBAAPI.so  --state present --source "$__type/files/usr/lib64/libHBAAPI.so" --mode 0755
+    __link /usr/lib/libdfc.so.4 --source  libdfc.so.4.2.14 --type symbolic
+    __link /usr/lib64/libdfc.so.4 --source  libdfc.so.4.2.14 --type symbolic
+else
+    echo "Warning: hostutilities-${version} is not implemented yet" >&2
+    exit 1
+fi

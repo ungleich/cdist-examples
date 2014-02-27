@@ -1,0 +1,98 @@
+#!/bin/sh
+# $Id: //depot/prod/capstan/Rcapstan3.0/src/bin/smo_server.skel#2 $
+# Copyright (c) 2006 Network Appliance, Inc.
+# All rights reserved.
+#
+# Start/Stop/Status the smsap Server
+#
+
+# If the server is started with a CWD that is not accessible by the oracle user
+# it causes problems with some of the commands that have to run as oracle.
+
+### BEGIN INIT INFO
+# Provides:          smsap_server
+# Required-Start:    $local_fs $network $named snapdrived
+# Required-Stop:     $local_fs $network $named snapdrived
+# Default-Start:     3
+# Default-Stop:      3
+# Description:       SMSAP Server
+### END INIT INFO
+
+cd /opt/NetApp/smsap
+
+# HP-UX Startup hooks
+case "$1" in
+    'start_msg')
+        echo "Start SnapManager for SAP"
+        exit 0
+        ;;
+    'stop_msg')
+        echo "Stop SnapManager for SAP"
+        exit 0
+        ;;
+esac
+
+SM_JAR=/opt/NetApp/smsap/webapp/WEB-INF/lib/smsap/smsap.jar
+if [ ! -r ${SM_JAR} ] ; then
+    echo "Unable to run $0: \"${SM_JAR}\" does not exist."
+    exit 1
+fi
+
+JAVA_HOME="/opt/NetApp/smsap/jre"
+PATH="$JAVA_HOME/bin:/sbin:/usr/sbin:/bin:/usr/bin:$PATH"
+
+if [ -z "$__LINKER_ENV" ]; then
+    LD_LIBRARY_PATH="/opt/NetApp/smsap/webapp/WEB-INF/native"
+else
+    LD_LIBRARY_PATH="$LD_LIBRARY_PATH:/opt/NetApp/smsap/webapp/WEB-INF/native"
+fi
+
+export JAVA_HOME PATH LD_LIBRARY_PATH
+
+# If shell is killed the java process will keep running as zombie and user will see no message.
+# Ignore silently - see 226710
+trap /bin/true TERM
+
+umask 0007
+
+cmd="java -Xmx128m -XX:+HeapDumpOnOutOfMemoryError -enableassertions ${JVM_ARGS} -cp ${SM_JAR} com.netapp.dlm.ui.cli.SMOServerCLI $*"
+
+#
+# If running start or restart, run in the background.
+#
+if [ "$1" = "start" -o "$1" = "restart" ] ; then
+    LOG="/opt/NetApp/smsap/log/smsap_server_console_`hostname`.log"
+    OLD_LOG="$LOG.old"
+
+    # remove the old log and move the current log to it.
+    if [ -f $LOG ]; then
+        rm -f $OLD_LOG
+        mv $LOG $OLD_LOG
+    fi
+
+    # touch the log so that it's present when we try to grep it
+    touch $LOG
+                      
+    $cmd >$LOG 2>&1 &
+    pid=$!
+    while ps -fp $pid >/dev/null 2>&1
+    do
+        # grep for the log that indicates the server has started.
+        msg=`grep "17100" "$LOG"`
+	if [ -n "$msg" ] ; then
+	    echo "$msg"
+	    exit 0
+	fi
+	sleep 1
+    done
+    echo "Starting SnapManager for SAP server failed."
+    cat "$LOG"
+    exit 1
+elif [ "$1" = "stop" ]; then
+#    $cmd
+     killall -9 -e -w /opt/NetApp/smsap/jre/bin/java
+     exit 0
+else
+     echo "$1 not implemented!"
+     exit 1
+fi

@@ -1,0 +1,47 @@
+#!/bin/sh
+#
+# 2013 - 2014 Thomas Oettli    (otho at sfs.biz)
+# 2013 - 2014 Daniel Heule     (hda at sfs.biz)
+#
+# This file is part of sfs-cdist-types.
+#
+# sfs-cdist-types is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# sfs-cdist-types is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with sfs-cdist-types. If not, see <http://www.gnu.org/licenses/>.
+#
+
+
+if [ -f "$__object/parameter/version" ]; then
+    version="$(cat "$__object/parameter/version")"
+fi
+
+installed_version="$(cat "$__object/explorer/installed_version")"
+
+[ "${installed_version}" = "${version}" ] && exit 0
+# install package
+echo "cd /tmp"
+echo "./netapp.smsap.linux-x64-${version}.bin -f /tmp/installer.properties -i silent &> /dev/null"
+# copy init script and config file
+echo "cp -a smsap.config /opt/NetApp/smsap/properties/smsap.config"
+echo "cp -a snapmanager.pamd /etc/pam.d/snapmanager"
+echo "cp -a smsap_server.initd /etc/init.d/smsap_server"
+echo "insserv -r smsap_server"
+echo "insserv smsap_server"
+echo "/etc/init.d/smsap_server start &> /dev/null"
+echo "smsap credential set -repository -dbname XE -host sap-sm1.sfs-intra.net -login -username smsap -password smsap -port 1521 &> /dev/null"
+# cleanup
+echo "cd /tmp"
+echo "rm -f netapp.smsap.linux-x64-${version}.bin"
+echo "rm -f smsap.config"
+echo "rm -f snapmanager.pamd"
+echo "rm -f smsap_server.initd"
+echo "rm -f installer.properties"

@@ -1,0 +1,15 @@
+This type is used to install netapp hostutilities on hosts with fc - adapter.
+
+It installs all needed .so files without installing the emulex or qlogic kit.
+
+Please take a look on the files/.gitignore file to examine which files 
+you need to drop into the files folder.
+
+Most of the files could be collected from a host where 
+the toolkits are installed.
+
+Also the netapp hostutilities rpm needs to be copied in the files folder.
+
+Example usage:
+
+    __sfs_netapp_hostutilities --version 6.2.212.1387
