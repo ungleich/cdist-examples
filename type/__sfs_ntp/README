@@ -1,0 +1,8 @@
+This type is used to copy ntp config files to hosts.
+
+This type makes sure, that the ntp package is installed, adds the daemon to
+default runlevel and copy the config file from files.
+
+Example usage:
+
+    __sfs_ntp --version sles11sp2
