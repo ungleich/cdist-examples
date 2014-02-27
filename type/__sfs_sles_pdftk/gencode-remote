@@ -1,0 +1,44 @@
+#!/bin/sh
+#
+# 2013 - 2014 Thomas Oettli    (otho at sfs.biz)
+# 2013 - 2014 Daniel Heule     (hda at sfs.biz)
+#
+# This file is part of sfs-cdist-types.
+#
+# sfs-cdist-types is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# sfs-cdist-types is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with sfs-cdist-types. If not, see <http://www.gnu.org/licenses/>.
+#
+
+
+if [ -f "$__object/parameter/version" ]; then
+    version="$(cat "$__object/parameter/version")"
+fi
+
+installed_version="$(cat "$__object/explorer/installed_version")"
+
+[ "${installed_version}" = "${version}" ] && exit 0
+
+# Unpack source package
+echo "cd /tmp"
+echo "unzip -o pdftk-${version}-src.zip > /dev/null || exit 1"
+echo "cd pdftk-${version}-dist/pdftk"
+echo "cp /tmp/Makefile.SLES11 ."
+# compile source
+echo "make -f Makefile.SLES11 &>/dev/null || exit 1"
+# install
+echo "cp ./pdftk /usr/local/bin/ || exit 1"
+# cleanup
+echo "cd /tmp"
+echo "rm -rf pdftk-${version}-dist"
+echo "rm pdftk-${version}-src.zip"
+echo "rm Makefile.SLES11"
