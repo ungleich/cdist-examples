@@ -1,0 +1,3 @@
+[submodule "type/__nico_primary_user"]
+	path = type/__nico_primary_user
+	url = https://github.com/telmich/__nico_primary_user.git
