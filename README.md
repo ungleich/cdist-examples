@@ -15,9 +15,9 @@ to get all types. Dive into the type directory to browse the available types!
 
 Thanks go to our customers who allow us to publish these examples:
 
-    - Panter AG (www.panter.ch)
-    - Local.ch AG (www.local.ch)
-    - ungleich GmbH (yes, we also publish our own types, www.ungleich.ch)
+ * Panter AG (www.panter.ch)
+ * Local.ch AG (www.local.ch)
+ * ungleich GmbH (yes, we also publish our own types, www.ungleich.ch)
 
 ## Copying
 
