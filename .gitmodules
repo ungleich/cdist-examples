@@ -1,3 +1,18 @@
 [submodule "type/__nico_primary_user"]
 	path = type/__nico_primary_user
 	url = https://github.com/telmich/__nico_primary_user.git
+[submodule "type/__ungleich_cdist_user"]
+	path = type/__ungleich_cdist_user
+	url = https://github.com/ungleich/__ungleich_cdist_user.git
+[submodule "type/__ungleich_ssh_root_without_password"]
+	path = type/__ungleich_ssh_root_without_password
+	url = https://github.com/ungleich/__ungleich_ssh_root_without_password.git
+[submodule "type/__ungleich_ntp"]
+	path = type/__ungleich_ntp
+	url = https://github.com/ungleich/__ungleich_ntp.git
+[submodule "type/__ungleich_staff_ssh_access"]
+	path = type/__ungleich_staff_ssh_access
+	url = https://github.com/ungleich/__ungleich_staff_ssh_access.git
+[submodule "type/__ungleich_user_logview"]
+	path = type/__ungleich_user_logview
+	url = https://github.com/ungleich/__ungleich_user_logview.git
