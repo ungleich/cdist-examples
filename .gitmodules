@@ -16,3 +16,6 @@
 [submodule "type/__ungleich_user_logview"]
 	path = type/__ungleich_user_logview
 	url = https://github.com/ungleich/__ungleich_user_logview.git
+[submodule "type/__nico_managed_desktop"]
+	path = type/__nico_managed_desktop
+	url = git@github.com:telmich/__nico_managed_desktop.git
