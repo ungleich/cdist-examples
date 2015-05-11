@@ -22,3 +22,6 @@
 [submodule "type/__nico_network_wicd"]
 	path = type/__nico_network_wicd
 	url = https://github.com/telmich/__nico_network_wicd.git
+[submodule "type/__ungleich_postgresql"]
+	path = type/__ungleich_postgresql
+	url = https://github.com/ungleich/__ungleich_postgresql.git
