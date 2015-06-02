@@ -25,3 +25,6 @@
 [submodule "type/__ungleich_postgresql"]
 	path = type/__ungleich_postgresql
 	url = https://github.com/ungleich/__ungleich_postgresql.git
+[submodule "type/__ungleich_ssh_access_group_based"]
+	path = type/__ungleich_ssh_access_group_based
+	url = https://github.com/ungleich/__ungleich_ssh_access_group_based.git
