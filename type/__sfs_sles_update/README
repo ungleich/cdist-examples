@@ -1,0 +1,9 @@
+This type determines if the SLES system is a fresh installation or if
+updates where installed already.
+If it is a fresh installation, it installs updates and marks the system
+for reboot.
+Otherwise it does not do anything.
+
+Example usage:
+
+    __sfs_sles_update

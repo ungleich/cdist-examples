@@ -1,0 +1,46 @@
+#!/bin/sh
+#
+# 2013 - 2014 Thomas Oettli    (otho at sfs.biz)
+# 2013 - 2014 Daniel Heule     (hda at sfs.biz)
+#
+# This file is part of sfs-cdist-types.
+#
+# sfs-cdist-types is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# sfs-cdist-types is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with sfs-cdist-types. If not, see <http://www.gnu.org/licenses/>.
+#
+# install snapdrive 
+
+if [ -f "$__object/parameter/version" ]; then
+    version="$(cat "$__object/parameter/version")"
+fi
+
+installed_version="$(cat "$__object/explorer/installed_version")"
+
+[ "${installed_version}" = "${version}" ] && exit 0
+
+if [ -f "$__type/files/${version}/netapp.snapdrive.linux_${version}.rpm" ]; then
+    # install libnl-32bit if needed
+    __package libnl-32bit --state present
+    # copy source package to target host
+    __file /tmp/netapp.snapdrive.linux_${version}.rpm --state present --source "$__type/files/${version}/netapp.snapdrive.linux_${version}.rpm"
+    # copy config to target host
+    __file /tmp/snapdrive.conf --state present --source "$__type/files/${version}/snapdrive.conf" --mode 0644
+    __file /tmp/snapdrived.initd --state present --source "$__type/files/${version}/snapdrived.initd" --mode 0755
+    __file /tmp/.pwfile --state present --source "$__type/files/${version}/.pwfile"
+    __file /tmp/.sdupw --state present --source "$__type/files/${version}/.sdupw"
+    # copy wrapper script
+    __file /root/dynamic-lun-rescan.sh --state present --source "$__type/files/${version}/dynamic-lun-rescan.sh" --mode 0700
+else
+    echo "Warning: snapdrive-${version} is not implemented yet" >&2
+    exit 1
+fi

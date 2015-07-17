@@ -1,0 +1,8 @@
+This type installs the netapp snapdrive on SLES 11 SP2 / SP3
+
+Please take a look on the files/.gitignore file to examine which files 
+you need to drop into the files folder.
+
+Example usage:
+
+    __sfs_netapp_snapdrive --version 5.2P1

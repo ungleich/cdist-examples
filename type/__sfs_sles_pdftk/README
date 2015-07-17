@@ -1,0 +1,8 @@
+This type configures, compiles and installs pdftk from source package.
+The runpdftk_a4.sh script needs verions 907 of the gs binary (gs-907).
+Download the static linked version of the binary from ghostscript homepage
+and drop it into files/<version>/
+
+Example usage:
+
+    __sfs_sles_pdftk --version 1.45

@@ -1,0 +1,104 @@
+#!/bin/sh
+#
+# chkconfig: 345 99 01
+# description: Starts and stops the snapdrive daemon.
+#
+# processname: snapdrived
+# pidfile: /var/run/snapdrived.pid
+# config: /opt/NetApp/snapdrive/snapdrive.conf 
+
+### BEGIN INIT INFO
+# Provides:          snapdrived
+# Required-Start:    $local_fs $network $named multipathd
+# Required-Stop:     $local_fs $network $named multipathd
+# Default-Start:     3
+# Default-Stop:      
+# Description:       SnapDrive Daemon
+### END INIT INFO
+
+PACKAGE=/opt/NetApp/snapdrive
+. $PACKAGE/snapdrived_var.rcscript
+
+PATH=$PATH:$SNAPDRIVED_PATH
+
+# The cron job is initiated during system shutdown/reboot and 
+# fresh install, else we just start the SnapDrive Daemon.
+start()
+{
+#	$CRONTAB -l 2>&1 | $GREP "snapdrived_cron" 1>/dev/null 2>&1 
+#	rval=$?
+#	$PS -ef | $GREP "snapdrived_cron" | $GREP -v "grep" 1>/dev/null 2>&1
+#	if [ $? -ne 0 -a $rval -ne 0 ] ; then
+#	if [ $? -ne 0 ] ; then
+		echo -n $"Starting snapdrive daemon: "
+		$SNAPDRIVED start
+		RETVAL=$?
+		echo
+		[ $RETVAL -eq 0 ] || return
+		if [ ! -f $LOCKFILE ] ; then
+			$TOUCH $LOCKFILE
+		fi
+		echo 
+#	else
+#		echo "Initiated cron job to start SnapDrive Daemon, please wait for $SLEEP_TIME_IN_SEC seconds"	
+#		RETVAL=0
+#	fi
+}
+
+# If system is shutting down or rebooting then initiate a cron job,
+# so that SnapDrive Daemon is started during system boot up.
+# If $LOCKFILE not present then cron job will not be initiated.
+stop()
+{
+	echo -n $"Stopping snapdrive daemon: "
+	$SNAPDRIVED -force stop
+	RETVAL=$? # OTHO
+#	echo
+
+#	rlevel=`$WHO -r | $AWK '{ print $2 }'`
+#	if [ $rlevel -eq 6 -o $rlevel -le 1 -a -f $LOCKFILE ] ; then
+#		$CRONTAB -l 2>&1 | $GREP "snapdrived_cron" 1>/dev/console 2>&1 
+#		if [ $? -ne 0 ] ; then
+#			$CRONTAB -l > $TMPCRONFILE
+#			echo "0-59 * * * * $PACKAGE/snapdrived_cron" >> $TMPCRONFILE 
+#			$CRONTAB $TMPCRONFILE
+#			if [ $? -ne 0 ] ; then
+#				echo "Failed to add SnapDrive Daemon start as cron job, please start the daemon manually after reboot" 1>/dev/console 2>&1
+#				RETVAL=1		
+#				return 1
+#			fi
+#			$RM $TMPCRONFILE
+#		fi
+		$RM -f $LOCKFILE
+#	fi
+}
+
+restart()
+{
+	stop
+	start
+}
+
+case "$1" in
+	start)
+		start
+		;;
+	stop)
+		stop
+		;;
+	restart)
+		restart
+		;;
+	status)
+		$SNAPDRIVED status	
+		RETVAL=$?
+		;;
+        condrestart)
+	        [ -f $LOCKFILE ] && restart
+		;;
+	*)
+		echo $"Usage: $0 {start|stop|restart|status|condrestart}"
+		exit 1
+esac
+
+exit $RETVAL
